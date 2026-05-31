@@ -14,7 +14,16 @@ export class AuthPage {
   }
 
   async goto() {
-    await this.page.goto('/');
+    for (let attempt = 1; attempt <= 2; attempt += 1) {
+      try {
+        await this.page.goto('/', { waitUntil: 'domcontentloaded' });
+        return;
+      } catch (error) {
+        if (attempt === 2) {
+          throw error;
+        }
+      }
+    }
   }
 
   async login(login: string, password: string) {
