@@ -1,4 +1,4 @@
-import {Locator, Page} from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
 export class AuthPage {
   readonly page: Page;
@@ -10,12 +10,18 @@ export class AuthPage {
     this.page = page;
     this.loginInput = this.page.getByPlaceholder('логин');
     this.passwordInput = this.page.getByPlaceholder('пароль');
-    this.loginButton = this.page.getByText('логин');
+    this.loginButton = this.page.getByRole('button', { name: 'Войти' });
   }
 
-  async auth(login: string, password: string) {
-    await this.loginInput.fill(login);
-    await this.passwordInput.fill(password);
+  async goto() {
+    await this.page.goto('/');
+  }
+
+  async login(login: string, password: string) {
+    await expect(this.loginInput).toBeVisible();
+    await expect(this.passwordInput).toBeVisible();
+    await this.loginInput.fill(login, { force: true });
+    await this.passwordInput.fill(password, { force: true });
     await this.loginButton.click();
-  } 
+  }
 }
